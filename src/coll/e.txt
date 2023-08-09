@@ -1,0 +1,6 @@
+0 0 21 13 Waves Part 1
+0 1 0 5 Some Basic Concepts of Chemistry
+0 1 0 6 Some Basic Concepts of Chemistry
+0 1 5 24 Chemical Bonding and Molecular Structure Part 1
+0 1 15 *(1-75) The P-Block Elements (Group 13-14) #remove braces in url
+0 1 26 43 Chemical Kinetics Part 1
