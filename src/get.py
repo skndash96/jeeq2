@@ -17,7 +17,7 @@ def get_url(klas, sub, chap, topic, qn):
       topic
     )).lower()
     
-    url = f"https://examsnet.com/test/jee-main-{sub_codes[sub]}-class-{klas_codes[klas].lower()}--{title}--questions/q-{qn}/"
+    url = f"https://examsnet.com/test/jee-main-{sub_codes[sub]}-class-{klas_codes[klas]}--{title}--questions/q-{qn}/"
     
     return url
   except (KeyError, IndexError) as error:
