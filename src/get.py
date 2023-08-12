@@ -4,13 +4,13 @@ import re;
 from socket import timeout;
 from errors import *;
 
-klas_codes = ("11", "12")
-sub_codes = ("physics", "chemistry", "math")
-
 #3333333333333333333333333333333333333
 
 
 def get_url(klas, sub, chap, topic, qn):
+  klas_codes = ("11", "12")
+  sub_codes = ("physics", "chemistry", "math")
+
   try:
     title = "-".join(re.split(
       "\s+",

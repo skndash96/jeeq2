@@ -1,27 +1,21 @@
-from iter import iter_chap;
-import json;
+from PIL import Image, ImageEnhance
+from os import listdir
 
-def main():
-  klas, sub, chap = 0,0,0
-  rng, topic = [], ""
+def watermark(code):
+  paths = listdir(f"coll/pics{code}")
+  print(paths)
   
-  file = "coll/%s%s.json" % (klas, sub)
-  
-  qs = iter_chap((
-    klas, sub, chap,
-    topic
-  ), rng)
-  
-  print(len(qs))
-  
-  data = json.load(open(file))
-  
-  print(len(data))
-  data.extend(qs)
-  print(len(data))
-  
-  json.dump(data, open(file, "w"))
-  
-  print(f"saved at {file}")
+  for path in paths:
+    path = f'coll/pics{code}/{path}'
+    i = Image.open(path).convert('RGBA')
+    
+    i = ImageEnhance.Brightness(i).enhance(1.1)
+    i.save(path)
+    
+    i = Image.open(path)
+    i = ImageEnhance.Contrast(i).enhance(5)
+    
+    i.save(path)
+    print("done", path)
 
-main()
+watermark("12")

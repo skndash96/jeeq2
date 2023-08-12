@@ -2,12 +2,9 @@ import re;
 import json;
 from urllib.request import urlopen;
 from urllib.error import HTTPError, URLError;
-from get import klas_codes, sub_codes, get_url, get_json;
+from get import get_url, get_json;
 from errors import *;
 import traceback;
-
-
-d = json.load(open("topics.json", "r"));
 
 ########################################
 
