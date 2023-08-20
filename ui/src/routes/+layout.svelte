@@ -5,7 +5,7 @@
 <div class="app">
   <header>
     <div>
-      <h2> Folidox </h2>
+      <h2> Momento </h2>
     </div>
   </header>
   
@@ -15,6 +15,11 @@
 	
 	<footer>
 	  <span> Source and Credits: Examsnet.com </span>
+	  <br>
+	  <span> The biggest risk is not taking any risk, take the go and wait to
+	  smile. </span>
+	  <hr>
+	  <span> By Dash Skndash </span>
 	</footer>
 </div>
 
@@ -41,6 +46,10 @@
   }
   footer span {
     font-size: var(--size-sm);
+  }
+  footer hr {
+    max-width: 10rem;
+    margin: .5rem auto;
   }
   main {
     flex-grow: 1;

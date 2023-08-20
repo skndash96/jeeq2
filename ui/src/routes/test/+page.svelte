@@ -1,22 +1,64 @@
 <script>
+  import { onMount } from "svelte";
   export let data;
   
-  const PREFIX = "http://localhost:5000/getq?";
+  const PREFIX = "http://127.0.0.1:5000/getq?";
+  const optMap = ['a.', 'b.', 'c.', 'd.', 'e.'];
   
   let sub, klas, chap,
   opt_open = true,
   current_q = null;
+  
+  let show = false;
+  
+  let pad, pad_stat;
+  onMount(async () => {
+    const el = document.getElementById("sketchpad");
+    const Sketchpad = await import("responsive-sketchpad");
+    
+    pad = new Sketchpad.default(el, {
+      width: "300px",
+      height: "500px"
+    });
+    
+    pad.setLineColor("#000000");
+    pad.setLineSize(2);
+    togglePad();
+  })
+
+  function undo() {
+    pad && pad.undo();
+  }
+  function clear() {
+    pad && pad.clear();
+  }
+  function togglePad() {
+    if (pad) {
+      pad_stat = !pad_stat;
+      pad.setReadOnly(pad_stat);
+    }
+  }
+
+  function showAnswer() {
+    show = !show;
+  }
   
   function toggleOpt() {
     opt_open = !opt_open;
   }
 
   async function getQ() {
-    const res = await fetch(PREFIX)
-      .catch(e => console.error(res));
+    show = false;
     
-    current_q = res;
-    return;
+    try {
+      let res = await fetch(`http://127.0.0.1:5000/getq?klas=${klas||""}&sub=${sub||""}&chap=${chap||""}`);
+      current_q = (await res.json())[0];
+      
+      console.log(current_q);
+    } catch (e) {
+      console.error(e);
+      current_q = Error(e.message)
+    }
   }
 </script>
 
@@ -30,7 +72,7 @@
 
 <section>
   <div class="titleBox">
-    <h1> JEE Test Options </h1>
+    <h1> JEE test </h1>
     
     <button on:click="{toggleOpt}">
       {#if opt_open }
@@ -38,6 +80,7 @@
       {:else }
       open
       {/if }
+      options
     </button>
   </div>
 
@@ -48,7 +91,7 @@
           Class
         </label>
         <select id="inklas" bind:value="{klas}">
-          <option value="2" selected>XI and XII</option>
+          <option value="" selected>XI and XII</option>
           <option value="0">XI</option>
           <option value="1">XII</option>
         </select>
@@ -59,7 +102,7 @@
           Subject
         </label>
         <select id="insub" bind:value="{sub}">
-          <option value="3" selected>All</option>
+          <option value="" selected>All</option>
           <option value="0">Physics</option>
           <option value="1">Chemistry</option>
           <option value="2">Maths</option>
@@ -79,30 +122,54 @@
           {/if}
         </select>
       </div>
-      
-      <!--div>
-        <label for="innum">
-          Questions
-        </label>
-        <div>
-          <span> {num} </span>
-            <input id="innum" bind:value="{num}" type="range" min="1" max="30" />
-        </div>
-      </div>
-
-      <div>
-        <label for="intimer">
-          Timed
-        </label>
-        <input id="intimer" bind:checked="{timed}" type="checkbox" />
-      </div-->
   </form>
 </div>
 
 <div class="questionBox">
+  <style>.fm-math,fmath{font-family:STIXGeneral,'DejaVu Serif','DejaVu Sans',Times,OpenSymbol,'Standard Symbols L',serif;line-height:1.2}.fm-math mtext,fmath mtext{line-height:normal}.fm-mo,.ma-sans-serif,fmath mi[mathvariant*=sans-serif],fmath mn[mathvariant*=sans-serif],fmath mo,fmath ms[mathvariant*=sans-serif],fmath mtext[mathvariant*=sans-serif]{font-family:STIXGeneral,'DejaVu Sans','DejaVu Serif','Arial Unicode MS','Lucida Grande',Times,OpenSymbol,'Standard Symbols L',sans-serif}.fm-mo-Luc{font-family:STIXGeneral,'DejaVu Sans','DejaVu Serif','Lucida Grande','Arial Unicode MS',Times,OpenSymbol,'Standard Symbols L',sans-serif}.questionsfont{font-family: Arial, sans-serif, STIXGeneral,'DejaVu Sans','DejaVu Serif','Lucida Grande','Arial Unicode MS',Times,OpenSymbol,'Standard Symbols L',sans-serif!important}</style>
+  <style>.fm-separator{padding:0 .56ex 0 0}.fm-infix-loose{padding:0 .56ex}.fm-infix{padding:0 .44ex}.fm-prefix{padding:0 .33ex 0 0}.fm-postfix{padding:0 0 0 .33ex}.fm-prefix-tight{padding:0 .11ex 0 0}.fm-postfix-tight{padding:0 0 0 .11ex}.fm-quantifier{padding:0 .11ex 0 .22ex}.ma-non-marking{display:none}.fm-vert,fmath menclose,menclose.fm-menclose{display:inline-block}.fm-large-op{font-size:1.3em}.fm-inline .fm-large-op{font-size:1em}fmath mrow{white-space:nowrap}.fm-vert{vertical-align:middle}fmath table,fmath tbody,fmath td,fmath tr{border:0!important;padding:0!important;margin:0!important;outline:0!important}fmath table{border-collapse:collapse!important;text-align:center!important;table-layout:auto!important;float:none!important}.fm-frac{padding:0 1px!important}td.fm-den-frac{border-top:solid thin!important}.fm-root{font-size:.6em}.fm-radicand{padding:0 1px 0 0;border-top:solid;margin-top:.1em}.fm-script{font-size:.71em}.fm-script .fm-script .fm-script{font-size:1em}td.fm-underover-base{line-height:1!important}td.fm-mtd{padding:.5ex .4em!important;vertical-align:baseline!important}fmath mphantom{visibility:hidden}fmath menclose[notation=top],menclose.fm-menclose[notation=top]{border-top:solid thin}fmath menclose[notation=right],menclose.fm-menclose[notation=right]{border-right:solid thin}fmath menclose[notation=bottom],menclose.fm-menclose[notation=bottom]{border-bottom:solid thin}fmath menclose[notation=left],menclose.fm-menclose[notation=left]{border-left:solid thin}fmath menclose[notation=box],menclose.fm-menclose[notation=box]{border:thin solid}fmath none{display:none}</style>
+  
   <div>
-    {#if current_q} {res}
-    {:else} Press 'Next' for questions
+    {#if current_q === 0}
+    Loading...
+    {:else if current_q instanceof Error}
+      <p class="error">{current_q}</p>
+      Something went wrong, try skipping to next
+    {:else if current_q}
+      {@html `<style>${current_q.styles}</style>`}
+      <div>
+        <span class="title">
+          {current_q.topic}
+        </span>
+        
+        <p class="qText">
+          {@html current_q.text}
+        </p>
+        
+        <hr />
+        
+        <div class="choice">
+          {#if current_q.suggestedAnswer.length > 1}
+          {#each current_q.suggestedAnswer as opt, idx}
+          <p> {optMap[idx]} {@html opt.text} </p>
+          {/each}
+          {/if}
+        </div>
+        <!--Magnetic_Effects_Curr_Mag_116_q-->
+        <div class="answer">
+          <button on:click="{showAnswer}">
+            {#if show} Hide {:else} Show {/if} Answer
+          </button> <br />
+          
+          <span class:shown={show} class="option">
+            {#each current_q.acceptedAnswer as opt}
+            {optMap[opt.position]} {@html opt.text}
+            {/each}
+          </span>
+        </div>
+      </div>
+    {:else}
+      Press 'Next' for questions
     {/if}
   </div>
 </div>
@@ -110,6 +177,17 @@
 <button class="nextButton" on:click="{getQ}">
   Next Question
 </button>
+
+<div class="pad">
+  <span> Use this sketchpad for calcs </span>
+  <div>
+    <button on:click="{undo}"> undo </button>
+    <button on:click="{clear}"> clear </button>
+    <button on:click="{togglePad}"> {#if pad_stat} unfreeze {:else} freeze {/if} </button>
+  </div>
+  <div id="blah"></div>
+  <div id="sketchpad"></div>
+</div>
 
 </section>
 
@@ -131,7 +209,9 @@ div.titleBox > * {
 display: inline;
 margin-right: 1rem;
 }
-
+h1 {
+font-size: 1.5rem;
+}
 #options {
 overflow: hidden;
 transform: translateY(-20%);
@@ -160,27 +240,63 @@ display: grid;
 grid-template-columns: 1fr 2fr;
 }
 
-form input {
-width: 100% !important;
-}
 form select {
 width: 100%;
 }
-form input:last-child {
-width: min-content !important;
-}
 
-div.questionBox {
+.questionBox {
 padding: 1rem;
 margin-top: 2rem;
 background: #00000011;
 box-shadow: 2px 2px 5px rgba(0,0,0,.2)
 }
 
+.questionBox .title {
+  font-weight: bold;
+  background: rgba(0,0,0,.2);
+  display: block;
+  transform: translate(-1rem, -1rem);
+  padding: .2rem;
+}
+
+.questionBox hr {
+  margin: 2rem;
+}
+
+.questionBox .choice {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.questionBox .answer {
+  margin-top: 2rem;
+}
+
+.questionBox .option {
+  display: none;
+}
+
+.questionBox .shown {
+  display: inline;
+}
+
 button.nextButton {
 margin-top: 1rem;
 display: block;
-margin-x: auto;
+margin-left: auto;
 }
 
+.pad {
+margin-top: 2rem;
+}
+.pad span {
+font-size: .85rem;
+}
+
+#sketchpad {
+margin-top: 1rem;
+margin-left: 2rem;
+border: 2px solid rgba(0,0,0,.5);
+}
 </style>
