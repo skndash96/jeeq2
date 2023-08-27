@@ -1,4 +1,4 @@
-import random;
+import random, os;
 from db import DB, topics;
 from flask import Flask, redirect, request, abort;
 from flask_cors import CORS;
@@ -10,7 +10,7 @@ CORS(app)
 
 @app.route("/")
 def home():
-  return redirect("/getq", 200)
+  return "Hello, world!"
 
 @app.route("/getq")
 def get_q():
@@ -52,3 +52,11 @@ def get_q():
     qs.append( data[q_idx] )
   
   return qs
+
+if __name__ == "__main__":
+  PORT = os.environ.get("PORT", 5000)
+  
+  app.run(
+    port = PORT,
+    debug = True
+  )
