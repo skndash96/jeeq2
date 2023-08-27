@@ -5,7 +5,8 @@
 <div class="app">
   <header>
     <div>
-      <h2> Momento </h2>
+      <img class="logo" src="logo.png" alt="logo" />
+      <h2> Momentum </h2>
     </div>
   </header>
   
@@ -34,7 +35,16 @@
   header, footer {
     color: #fff;
     padding: .25rem 1rem;
-    background: linear-gradient(to right bottom, #a72344, #ad1616);
+    background: linear-gradient(to right bottom, #dd5410, #ad1616);
+  }
+  
+  header div {
+    display: flex;
+    align-items: center;
+  }
+  header .logo {
+    width: 2rem;
+    height: 2rem;
   }
   
   header {
@@ -50,6 +60,8 @@
   footer hr {
     max-width: 10rem;
     margin: .5rem auto;
+    border: 1px solid #ff6565;
+    border-radius: 1rem;
   }
   main {
     flex-grow: 1;
