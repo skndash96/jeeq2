@@ -2,16 +2,17 @@
   import { onMount } from "svelte";
   export let data;
   
-  const PREFIX = "http://127.0.0.1:5000/getq?";
+  const PREFIX = "https://jeeq-api.vercel.app/getq?";
   const optMap = ['a.', 'b.', 'c.', 'd.', 'e.'];
   
-  const history = [null, null, null, null, null];
+  let history = [],
+      cursor = 0;
   
   let sub, klas, chap,
   opt_open = true,
   current_q = null;
   
-  $: current_q = history.length ? history[0] : null;
+  $: current_q =  history[cursor];
   
   let show = false;
   
@@ -54,8 +55,13 @@
   async function getQ() {
     show = false;
     
+    if (cursor !== 0) {
+      cursor = cursor - 1;
+      return;
+    }
+    
     try {
-      let res = await fetch(`http://127.0.0.1:5000/getq?klas=${klas||""}&sub=${sub||""}&chap=${chap||""}`);
+      let res = await fetch(`${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${chap||""}`);
       current_q = (await res.json())[0];
       
       history.unshift(current_q);
@@ -63,12 +69,12 @@
       console.error(e);
       history.unshift(Error(e.message))
     } finally {
-      history.length > 5 && history.pop();
+      history = history.slice(0, 5);
     }
   }
   
   function prevQ() {
-    history.shift();
+    cursor = cursor + 1;
   }
 </script>
 
@@ -184,7 +190,7 @@
 </div>
 
 <div class="stateButtons">
-  <button class="prevButton" on:click="{prevQ}">
+  <button class="prevButton" on:click="{prevQ}" disabled={history.length == cursor+1}>
     Previous
   </button>
   
@@ -201,7 +207,9 @@
     <button on:click="{togglePad}"> {#if pad_stat} unfreeze {:else} freeze {/if} </button>
   </div>
   <div id="blah"></div>
-  <div id="sketchpad"></div>
+  <div id="sketchpad">
+    <div id="padscroll" class:closed={!pad_stat}></div>
+  </div>
 </div>
 
 </section>
@@ -309,6 +317,9 @@ justify-content: space-between;
 .stateButtons > * {
 display: block;
 }
+.stateButtons button:disabled {
+opacity: .9;
+}
 
 .pad {
 margin-top: 2rem;
@@ -317,9 +328,19 @@ margin-top: 2rem;
 font-size: .85rem;
 }
 
+#padscroll {
+position: absolute;
+width: 100%;
+height: 100%;
+}
+#padscroll.closed {
+max-height: 0;
+}
+
 #sketchpad {
 margin-top: 1rem;
 margin-left: 2rem;
+position: relative;
 border: 1px solid rgba(0,0,0,.25);
 }
 </style>

@@ -1,18 +1,9 @@
-import random, os, json;
+import random, os;
 from flask import Flask, redirect, request, abort;
 from flask_cors import CORS;
+from data import topics, Db;
 
 ERR400 = "Recieved inputs are not customary "
-
-topics = json.load(open("topics.json"))
-Db = {
-  "00": json.load(open("coll/00.json")),
-  "01": json.load(open("coll/01.json")),
-  "02": json.load(open("coll/02.json")),
-  "10": json.load(open("coll/10.json")),
-  "11": json.load(open("coll/11.json")),
-  "12": json.load(open("coll/12.json"))
-}
 
 app = Flask(__name__)
 CORS(app)
@@ -25,9 +16,9 @@ def home():
 def get_q():
   args = request.args;
   
-  klas = args.get("klas", None) or None
-  sub = args.get("sub", None) or None
-  chap = args.get("chap", None) or None
+  klas = args.get("klas") or None
+  sub = args.get("sub") or None
+  chap = args.get("chap") or None
   n = args.get("num", 1)
   code = None
 
