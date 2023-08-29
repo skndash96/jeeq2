@@ -61,7 +61,9 @@
     }
     
     try {
-      let res = await fetch(`${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${chap||""}`);
+      let res = await
+      fetch(`${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${chap?.toString() || ""}`);
+      
       current_q = (await res.json())[0];
       
       history.unshift(current_q);
