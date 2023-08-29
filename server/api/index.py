@@ -53,7 +53,7 @@ def get_q():
     
     data = Db.get(f"{klas}{sub}", None)
     
-    if chap:
+    if chap != None:
       [d_start, d_end] = topics[code][chap][1]
       data = data[d_start:d_end]
     
