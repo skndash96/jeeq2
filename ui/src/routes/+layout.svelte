@@ -2,6 +2,27 @@
 	import '../global.css';
 </script>
 
+<svelte:head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <meta name="author" content="Dash Skndash" />
+  <meta name='robots' content='index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1' />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" />
+  
+  <meta property="og:description" content="Take the risk and wait to smile." />
+  <meta name="description" content="Take the risk and wait to smile." />
+
+  <meta property="og:image" content="https://jeeq.vercel.app/logo.png" />
+  <meta property="og:url" content="https://jeeq.vercel.app/" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <meta name="keywords" content="JEE, Jee study tool, JEE questions, Jee test">
+</svelte:head>
+
 <div class="app">
   <header>
     <div>

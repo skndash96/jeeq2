@@ -1,5 +1,7 @@
 <script>
   import { onMount } from "svelte";
+  import { browser } from "$app/environment";
+  
   export let data;
   
   const PREFIX = "https://jeeq-api.vercel.app/getq?";
@@ -14,11 +16,24 @@
   
   $: current_q =  history[cursor];
   
-  let show = false;
-  
-  let pad, pad_stat;
+  let show = false,
+    pad, pad_stat;
   
   onMount(async () => {
+    try {
+      history = JSON.parse(window.localStorage.getItem(
+        "_history"
+      )) || [];
+      
+      let {_klas="", _sub="", _chap=""} = JSON.parse(
+        window.localStorage.getItem("_options")
+      ) || {};
+      
+      [klas, sub, chap] = [_klas, _sub, _chap];
+    } catch (e) {
+      console.error("Can't parse storage", e);
+    }
+    
     const el = document.getElementById("sketchpad");
     const Sketchpad = await import("responsive-sketchpad");
     
@@ -30,7 +45,7 @@
     pad.setLineColor("#000000");
     pad.setLineSize(2);
     togglePad();
-  })
+  });
 
   function undo() {
     pad && pad.undo();
@@ -72,25 +87,45 @@
       history.unshift(Error(e.message))
     } finally {
       history = history.slice(0, 5);
+      
+      window.localStorage.setItem(
+        "_history", JSON.stringify(history)
+      );
+      
+      if (opt_chng) {
+        window.localStorage.setItem(
+          "_options", JSON.stringify({
+            _klas: klas,
+            _sub: sub,
+            _chap: chap
+          })
+        );
+      }
+      
     }
   }
   
   function prevQ() {
-    cursor = cursor + 1;
+    if (history.length !== cursor) {
+      cursor = cursor + 1;
+    }
   }
 </script>
 
 
 
 <svelte:head>
-  <title>JEE Test</title>
+  <title>JEE Questions</title>
+    
+  <meta property="og:title" content="Momento | Questions" />
+  <meta name="title" content="Momento | Questions" />
 </svelte:head>
 
 
 
 <section>
   <div class="titleBox">
-    <h1> JEE test </h1>
+    <h1> JEE Questions </h1>
     
     <button on:click="{toggleOpt}">
       {#if opt_open }
@@ -109,7 +144,7 @@
           Class
         </label>
         <select id="inklas" bind:value="{klas}">
-          <option value="" selected>XI and XII</option>
+          <option value="">XI and XII</option>
           <option value="0">XI</option>
           <option value="1">XII</option>
         </select>
@@ -120,7 +155,7 @@
           Subject
         </label>
         <select id="insub" bind:value="{sub}">
-          <option value="" selected>All</option>
+          <option value="">All</option>
           <option value="0">Physics</option>
           <option value="1">Chemistry</option>
           <option value="2">Maths</option>

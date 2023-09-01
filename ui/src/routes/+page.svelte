@@ -3,7 +3,10 @@
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title> Momento | Homepage </title>
+	  
+  <meta property="og:title" content="Momento" />
+  <meta name="title" content="Momento | An Environment for JEE Aspirants" />
 </svelte:head>
 
 <section>
