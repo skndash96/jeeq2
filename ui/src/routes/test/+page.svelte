@@ -16,6 +16,12 @@
   
   $: current_q =  history[cursor];
   
+  let opt_chng = false;
+  $: {
+    klas, sub, chap;
+    opt_chng = true;
+  };
+  
   let show = false,
     pad, pad_stat;
   
