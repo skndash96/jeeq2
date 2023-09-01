@@ -19,6 +19,9 @@
   let opt_chng = false;
   $: {
     klas, sub, chap;
+    if (!klas || !sub) {
+      chap = "";
+    }
     opt_chng = true;
   };
   
