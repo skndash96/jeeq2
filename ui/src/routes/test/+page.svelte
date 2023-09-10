@@ -5,6 +5,8 @@
   export let data;
   
   const PREFIX = "https://jeeq-api.vercel.app/getq?";
+  // const PREFIX = "http://localhost:5000/getq?";
+  
   const optMap = ['a.', 'b.', 'c.', 'd.', 'e.'];
   
   let history = [],
@@ -85,8 +87,11 @@
     }
     
     try {
-      let res = await
-      fetch(`${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${chap?.toString() || ""}`);
+      let res = await fetch(
+        `${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${chap.join(",")}`, {
+          method: 'GET'
+        }
+      );
       
       current_q = (await res.json())[0];
       
@@ -175,8 +180,7 @@
         <label for="inchap">
           Chapter
         </label>
-        <select id="inchap" bind:value="{chap}" disabed={klas==2 ||sub==3}>
-          <option value=""> Any </option>
+        <select id="inchap" bind:value="{chap}" multiple disabed={klas==2 ||sub==3}>
           {#if klas && sub && klas != 2 && sub != 3}
           {#each data[`${klas}${sub}`] as t, i}
             <option value="{i}"> {t[0]} </option>
