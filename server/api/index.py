@@ -1,5 +1,5 @@
-import random, os, json;
-from flask import Flask, redirect, request, abort;
+import random, os, json, re;
+from flask import Flask, request, abort;
 from flask_cors import CORS;
 
 ERR400 = "Recieved inputs are not customary "
@@ -16,6 +16,31 @@ Db = {
 
 app = Flask(__name__)
 CORS(app)
+
+# @app.before_request
+def middle():
+  sessions = []
+  
+  headers = request.headers
+  print(rewrequest.headers['Authorization'])
+  
+  try:
+    cred, tokn = re.split(' ', headers.get("Authorization", ""))
+    
+    print("cred", cred, "token", token)
+    
+    if tokn:
+      pass
+    else:
+      abort(400, "No Authorization")
+  
+  except Exception as e:
+    abort(400, "Unable to parse Authorization")
+  
+  # response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+  # response.headers['Content-Security-Policy'] = "default-src 'self'"
+  # response.headers['X-Content-Type-Options'] = 'nosniff'
+  
 
 @app.route("/")
 def home():
@@ -39,6 +64,11 @@ def get_q():
       sub = max(0, min(int(sub), 2))
     if chap:
       code = f"{klas}{sub}"
+      
+      chap = random.choice(
+        re.split(",", chap)
+      )
+      
       chap = max(0, min(int(chap), len(topics[code]) - 1))
   except (ValueError, KeyError):
     abort(400, ERR400)
