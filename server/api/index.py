@@ -54,14 +54,20 @@ def get_q():
   sub = args.get("sub") or None
   chap = args.get("chap") or None
   n = args.get("num", 1)
+  qno = args.get("qno") or None
   code = None
 
   try:
     n = int(n)
+    
+    if qno:
+      qno = int(qno)
     if klas:
       klas = max(0, min(int(klas), 1))
     if sub:
       sub = max(0, min(int(sub), 2))
+    if n > 90:
+      raise ValueError()
     if chap:
       code = f"{klas}{sub}"
       
@@ -70,6 +76,7 @@ def get_q():
       )
       
       chap = max(0, min(int(chap), len(topics[code]) - 1))
+    
   except (ValueError, KeyError):
     abort(400, ERR400)
   
@@ -87,7 +94,17 @@ def get_q():
       [d_start, d_end] = topics[code][chap][1]
       data = data[d_start:d_end]
     
-    q_idx = random.randint(0, len(data)-1)
-    qs.append( data[q_idx] )
+    if qno:
+      q_idx = qno + n
+      if q_idx > len(data) - 1:
+        break
+    else:
+      q_idx = random.randint(0, len(data)-1)
+    
+    q = data[q_idx]
+    if qno:
+      q["qno"] = qno+n
+    
+    qs.append( q )
   
   return qs

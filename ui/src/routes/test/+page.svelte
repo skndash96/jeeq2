@@ -12,7 +12,7 @@
   let history = [],
       cursor = 0;
   
-  let sub, klas, chap,
+  let sub, klas, chap, qno, rand,
   opt_open = true,
   current_q = null;
   
@@ -36,11 +36,11 @@
         "_history"
       )) || [];
       
-      let {_klas="", _sub="", _chap=""} = JSON.parse(
+      let {_klas="", _sub="", _chap="", _qno=""} = JSON.parse(
         window.localStorage.getItem("_options")
       ) || {};
       
-      [klas, sub, chap] = [_klas, _sub, _chap];
+      [klas, sub, chap, qno] = [_klas, _sub, _chap, _qno];
     } catch (e) {
       console.error("Can't parse storage", e);
     }
@@ -88,12 +88,16 @@
     
     try {
       let res = await fetch(
-        `${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${chap.join(",")}`, {
+        `${PREFIX}klas=${klas||""}&sub=${sub||""}&chap=${(chap||[]).join(",")}&qno=${rand ? (qno||"1") : ""}`,
+        {
           method: 'GET'
         }
       );
       
       current_q = (await res.json())[0];
+      if (!current_q) {
+        throw Error("End of chapter questions.")
+      }
       
       history.unshift(current_q);
     } catch (e) {
@@ -101,6 +105,7 @@
       history.unshift(Error(e.message))
     } finally {
       history = history.slice(0, 5);
+      qno = history[0].qno || "";
       
       window.localStorage.setItem(
         "_history", JSON.stringify(history)
@@ -111,7 +116,8 @@
           "_options", JSON.stringify({
             _klas: klas,
             _sub: sub,
-            _chap: chap
+            _chap: chap,
+            _qno: qno
           })
         );
       }
@@ -188,6 +194,13 @@
           {/if}
         </select>
       </div>
+      
+      {#if chap.length === 1}
+      <div>
+        <label> Randomised </label>
+        <input id="inrand" bind:checked="{rand}" type="checkbox"/>
+      </div>
+      {/if}
   </form>
 </div>
 
